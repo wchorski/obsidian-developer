@@ -1,0 +1,83 @@
+:root{
+  --text-code: rgb(185, 175, 156);
+  --text-accent: #d6ba7c;
+  --c-codeblock: hsl(60, 31%, 18%);
+}
+
+/* HEADINGS */
+h1,
+.cm-header-1, 
+.markdown-rendered h1 {
+  color: hsl(56, 44%, 93%);
+  font-weight: bolder;
+  font-size: 30px;
+  letter-spacing: 3px;
+  margin-top: 2em;
+  filter: drop-shadow(rgb(69, 69, 53) 2px 2px 5px);
+}
+h2,
+.cm-header-2,
+.markdown-rendered h2 {
+  color: hsla(0, 0%, 100%, 0.766);
+  font-size: 20px;
+}
+
+h3,
+.cm-header-3,
+.markdown-preview-section h3 {
+  color: var(--text-accent);
+  margin-bottom: 0;
+}
+
+/* CODE BLOCKS */
+code,
+.cm-s-obsidian div.HyperMD-codeblock-bg,
+.cm-s-obsidian span.cm-inline-code:not(.cm-formatting):not(.cm-hmd-indented-code):not(.obsidian-search-match-highlight){
+  background-color: var(--c-codeblock) !important;
+  /* background: blue !important; */
+  padding: 0 8px;
+  /* border-radius: 3px; */
+  font-size: 85% !important;
+}
+p code{
+  padding: 0 8px !important;
+}
+.markdown-rendered code,
+.cm-hmd-codeblock,
+.cm-s-obsidian span.cm-inline-code{
+  color: var(--text-code);
+  padding: 0;  
+}
+
+/* .markdown-preview-view pre:has(code){
+  background: red !important;
+} */
+
+.markdown-preview-view pre,
+.language-fallback{
+  background-color: var(--c-codeblock) !important;
+}
+
+/* .markdown-rendered code {
+  color: rgb(232, 227, 210);
+} */
+
+
+/* LISTS */
+ul{
+  list-style-type: none;
+  padding-inline-start: 20px;
+}
+.HyperMD-list-line{
+  padding-left: 30px !important;
+}
+ul li::before{
+  content: '\2022';
+  display: inline-block;
+  width: 1em;
+  color: var(--text-accent);
+  margin-left: -1em;
+}
+.cm-formatting-list span{
+  color: var(--text-accent);
+}

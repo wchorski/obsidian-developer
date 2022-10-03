@@ -1,0 +1,184 @@
+{
+  "main": {
+    "id": "1ae9e13bb8b5697f",
+    "type": "split",
+    "children": [
+      {
+        "id": "fdbdb1ab8a2885ec",
+        "type": "split",
+        "children": [
+          {
+            "id": "22f0deeb0743fb40",
+            "type": "leaf",
+            "dimension": 47.13636363636364,
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "pywriter.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "68deb3d432214ff1",
+            "type": "split",
+            "dimension": 52.86363636363637,
+            "children": [
+              {
+                "id": "363d0aa565bc8d7f",
+                "type": "leaf",
+                "pinned": true,
+                "state": {
+                  "type": "graph",
+                  "state": {},
+                  "pinned": true
+                }
+              },
+              {
+                "id": "d62c8aea1a647ef1",
+                "type": "leaf",
+                "pinned": true,
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "hotkeys.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "pinned": true
+                }
+              }
+            ],
+            "direction": "horizontal"
+          }
+        ],
+        "direction": "vertical"
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "120e48dd38a7182e",
+    "type": "split",
+    "children": [
+      {
+        "id": "7b388a18a5077ba7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9d4acc865ba3fc13",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "3352d8c2e6461bd0",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "e1d2f4a48d140bf2",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "d3ddbdb4acb87a1c",
+    "type": "split",
+    "children": [
+      {
+        "id": "ce6e39696216b05a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0c4874a718fb7dc8",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "pywriter.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "4f9dc9387d277d79",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "pywriter.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "88d429d85a84fb13",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "260e3bf5f01fc28a",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "pywriter.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "22f0deeb0743fb40",
+  "lastOpenFiles": [
+    "hotkeys.md",
+    "Ignoreme/Yup.md",
+    "📁developer/Home Lab 🏠/PhotoPrism.md",
+    "📁developer/Docker.md",
+    "📁developer/Docker🐳/Docker_DNS_Networking.md",
+    "📁developer/Home Lab 🏠/Docker.md",
+    "📁developer/Home Lab 🏠/Home Lab 🏠.md",
+    "📁developer/_developer_box📦.md",
+    "📁developer/Home Lab 🏠/SAMBA.md",
+    "📁developer/Home Lab 🏠/XMRig.md"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "alwaysUpdateLinks": true,
+  "showLineNumber": true,
+  "spellcheck": true,
+  "newLinkFormat": "relative",
+  "newFileLocation": "current",
+  "attachmentFolderPath": "./",
+  "useMarkdownLinks": true,
+  "readableLineLength": false
+}
