@@ -1,12 +1,23 @@
-# [Homepage - Nextcloud](https://nextcloud.com/)
+## [Homepage - Nextcloud](https://nextcloud.com/)
 
+> Regain control over your data. Remote collaboration made easy
+>-   On-premises or cloud
+>-   Customizable and scaleable
+>-   No data leaks to third parties
+
+
+> I dropped **Google Drive** harder than a DJ with a fresh new crate of tracks. I even brought on some friends and family  
+> - me
+
+---
 ### connections
-- syncs pictures for [PhotoPrism](PhotoPrism.md) to read
+- publicly face app with [Nginx](Nginx%20Proxy%20Manager.md#Publicly%20Facing%20App)
+- syncs pictures for [PhotoPrism](PhotoPrism.md) to read my every growing photo gallery
 
-# installation
-### [Docker](../Docker.md)
-1. `compose.yml`
-```
+### installation
+1. note that I use an external drive. You must set up your other drive first.
+2. [Docker](Docker.md) `compose.yml`
+```yaml
 version: '2'
 
 volumes:
@@ -44,3 +55,13 @@ services:
       - MYSQL_USER=nextcloud
       - MYSQL_HOST=db
 ```
+
+---
+
+
+---
+
+#todo 
+- [x] man description
+- [x] my desc
+- [ ] 

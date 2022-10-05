@@ -1,3 +1,6 @@
 {
-  "cssTheme": "Subtlegold"
+  "cssTheme": "Sandstorm",
+  "enabledCssSnippets": [
+    "pywriter"
+  ]
 }

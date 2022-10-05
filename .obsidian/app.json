@@ -2,9 +2,9 @@
   "alwaysUpdateLinks": true,
   "showLineNumber": true,
   "spellcheck": true,
-  "newLinkFormat": "relative",
+  "newLinkFormat": "absolute",
   "newFileLocation": "current",
-  "attachmentFolderPath": "./",
+  "attachmentFolderPath": "./_attachments",
   "useMarkdownLinks": true,
   "readableLineLength": false
 }

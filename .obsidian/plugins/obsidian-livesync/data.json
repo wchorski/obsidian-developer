@@ -3,7 +3,7 @@
   "couchDB_USER": "admin_pywriter",
   "couchDB_PASSWORD": "sqe2R&3M5tv@Xy6YLoJAA6r&9@wEz%mR",
   "couchDB_DBNAME": "pywriterdb",
-  "liveSync": true,
+  "liveSync": false,
   "syncOnSave": false,
   "syncOnStart": false,
   "savingDelay": 200,

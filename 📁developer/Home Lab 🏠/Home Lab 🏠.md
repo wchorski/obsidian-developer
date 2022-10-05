@@ -41,6 +41,7 @@
 - Davinci Resolve
 - Unity3D
 - Steam, Epic Games, Battle.net
+- [Thunderbird — Make Email Easier. — Thunderbird](https://www.thunderbird.net/en-US/)
 
 ---
 # Sn0flake
@@ -53,6 +54,7 @@
 # Milkywave
 - [Nextcloud](Nextcloud.md)
 - [SAMBA](SAMBA.md)
+- [K-9 Mail (k9mail.app)](https://k9mail.app/)
 
 ---
 TODO LIST

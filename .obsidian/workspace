@@ -4,29 +4,29 @@
     "type": "split",
     "children": [
       {
-        "id": "fdbdb1ab8a2885ec",
+        "id": "85208ece68950097",
         "type": "split",
         "children": [
           {
-            "id": "22f0deeb0743fb40",
+            "id": "c43f7c0881fb89e4",
             "type": "leaf",
-            "dimension": 47.13636363636364,
+            "dimension": 62.46031746031746,
             "state": {
               "type": "markdown",
               "state": {
-                "file": "pywriter.md",
+                "file": "📁developer/GIT.md",
                 "mode": "source",
                 "source": false
               }
             }
           },
           {
-            "id": "68deb3d432214ff1",
+            "id": "f5d44788614938b0",
             "type": "split",
-            "dimension": 52.86363636363637,
+            "dimension": 37.53968253968254,
             "children": [
               {
-                "id": "363d0aa565bc8d7f",
+                "id": "d3d296baa369a8cb",
                 "type": "leaf",
                 "pinned": true,
                 "state": {
@@ -36,18 +36,39 @@
                 }
               },
               {
-                "id": "d62c8aea1a647ef1",
-                "type": "leaf",
-                "pinned": true,
-                "state": {
-                  "type": "markdown",
-                  "state": {
-                    "file": "hotkeys.md",
-                    "mode": "source",
-                    "source": false
+                "id": "32052505c1da457c",
+                "type": "split",
+                "children": [
+                  {
+                    "id": "22f0deeb0743fb40",
+                    "type": "leaf",
+                    "pinned": true,
+                    "state": {
+                      "type": "markdown",
+                      "state": {
+                        "file": "📁developer/N10-008 CompTIA Network+/Commands.md",
+                        "mode": "source",
+                        "source": false
+                      },
+                      "pinned": true
+                    }
                   },
-                  "pinned": true
-                }
+                  {
+                    "id": "d62c8aea1a647ef1",
+                    "type": "leaf",
+                    "pinned": true,
+                    "state": {
+                      "type": "markdown",
+                      "state": {
+                        "file": "hotkeys.md",
+                        "mode": "source",
+                        "source": false
+                      },
+                      "pinned": true
+                    }
+                  }
+                ],
+                "direction": "vertical"
               }
             ],
             "direction": "horizontal"
@@ -80,12 +101,12 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "git",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
                 "extraContext": false,
-                "sortOrder": "alphabetical"
+                "sortOrder": "byModifiedTime"
               }
             }
           },
@@ -117,7 +138,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "pywriter.md",
+                "file": "📁developer/GIT.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -134,7 +155,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "pywriter.md",
+                "file": "📁developer/GIT.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -157,28 +178,36 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "pywriter.md"
+                "file": "📁developer/GIT.md"
               }
             }
+          },
+          {
+            "id": "4fc545b5b431c92c",
+            "type": "leaf",
+            "state": {
+              "type": "todo",
+              "state": {}
+            }
           }
-        ]
+        ],
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 325.5
   },
-  "active": "22f0deeb0743fb40",
+  "active": "c43f7c0881fb89e4",
   "lastOpenFiles": [
-    "hotkeys.md",
-    "Ignoreme/Yup.md",
-    "📁developer/Home Lab 🏠/PhotoPrism.md",
-    "📁developer/Docker.md",
-    "📁developer/Docker🐳/Docker_DNS_Networking.md",
-    "📁developer/Home Lab 🏠/Docker.md",
-    "📁developer/Home Lab 🏠/Home Lab 🏠.md",
-    "📁developer/_developer_box📦.md",
-    "📁developer/Home Lab 🏠/SAMBA.md",
-    "📁developer/Home Lab 🏠/XMRig.md"
+    "📁developer/Home Lab 🏠/ReactJS.md",
+    "📁music/DJ_William🎛/2022.10.22 Teresa & Thomas.md",
+    "📁developer/GIT.md",
+    "📁developer/Untitled 1.md",
+    "📁music/DJ_William🎛/DJ Clients.md",
+    "📁music/DJ_William🎛/2022.10.28 Teresa.md",
+    "📁music/DJ_William🎛/2022.11.19 Nicolet.md",
+    "📁music/DJ_William🎛/2022.10.08 Linnea.md",
+    "📁music/DJ_William🎛/2022.10.01 Hannah.md",
+    "📁music/DJ_William🎛/2022.09.24 Brit & Richie.md"
   ]
 }

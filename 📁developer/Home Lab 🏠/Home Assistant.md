@@ -5,7 +5,7 @@ installed on [Raspberry Pi 4 Model B  4GB](https://www.raspberrypi.com/products/
 - securely accessed via [PiVPN](PiVPN.md)
 - [Hyperion](Hyperion.md)
 - [WLED](WLED.md)
-- Pixoo digital sign (via bluetooth)
+- [Divoom Pixoo (divoom.com)](https://divoom.com/products/divoom-pixoo?_pos=9&_sid=9523eaa72&_ss=r) digital sign (via bluetooth)
 - [Glances](Glances.md) - via Grafana & InfluxDB
 
 ### installation 

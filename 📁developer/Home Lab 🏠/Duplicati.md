@@ -1,4 +1,4 @@
-[Duplicati](https://www.duplicati.com/)
+## [Duplicati](https://www.duplicati.com/)
 - automatic backup and versioning solution
 - cross platform 
 
@@ -7,3 +7,7 @@
 - links to my [SFTP Server](SFTP%20Server.md) 
 
 1. `compose.yml`
+```yaml
+service 3.1
+
+```
