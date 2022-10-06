@@ -96,12 +96,15 @@ pre{
   color: rgb(232, 227, 210);
 } */
 
-
+p{
+  margin-bottom: 2px;
+}
 /* LISTS */
-/* ul{
-  list-style-type: none;
-  padding-inline-start: 20px;
-} */
+ul{
+  margin-top: 0;
+  /* list-style-type: none; */
+  /* padding-inline-start: 20px; */
+}
 /* .HyperMD-list-line{
   padding-left: 30px !important;
 } */

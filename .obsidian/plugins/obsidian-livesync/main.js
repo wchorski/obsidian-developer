@@ -1482,7 +1482,8 @@ var DEFAULT_SETTINGS = {
   syncIgnoreRegEx: "",
   syncOnlyRegEx: "",
   customChunkSize: 0,
-  readChunksOnline: true
+  readChunksOnline: true,
+  watchInternalFileChanges: true
 };
 var FLAGMD_REDFLAG = "redflag.md";
 var SYNCINFO_ID = "syncinfo";
@@ -2559,6 +2560,9 @@ var LocalPouchDBBase = class {
       console.log("Update Info default implement");
     };
     this.originalSetting = null;
+    this.collectThrottleTimeout = null;
+    this.collectThrottleQueuedIds = [];
+    this.chunkCollectedCallbacks = {};
     this.auth = {
       username: "",
       password: ""
@@ -3617,7 +3621,60 @@ var LocalPouchDBBase = class {
     }
     return true;
   }
+  chunkCollected(chunk) {
+    const id = chunk._id;
+    if (typeof this.chunkCollectedCallbacks[id] !== "undefined") {
+      for (const func of this.chunkCollectedCallbacks[id]) {
+        func(chunk);
+      }
+      delete this.chunkCollectedCallbacks[id];
+    } else {
+      Logger(`Collected handler of ${id} is missing, it might be error but perhaps it already timed out.`, LOG_LEVEL.VERBOSE);
+    }
+  }
   async CollectChunks(ids, showResult = false) {
+    const timeoutLimit = 333;
+    if (this.collectThrottleTimeout == null) {
+      this.collectThrottleTimeout = setTimeout(async () => {
+        this.collectThrottleTimeout = null;
+        await this.execCollect();
+      }, timeoutLimit);
+      return this.CollectChunksInternal(ids, showResult);
+    }
+    this.collectThrottleQueuedIds = [...new Set([...this.collectThrottleQueuedIds, ...ids])];
+    if (this.collectThrottleQueuedIds.length > 50) {
+      clearTimeout(this.collectThrottleTimeout);
+      this.collectThrottleTimeout = setTimeout(async () => {
+        this.collectThrottleTimeout = null;
+        await this.execCollect();
+      }, timeoutLimit);
+    }
+    const promises = ids.map((id) => new Promise((res2, rej) => {
+      const timer = setTimeout(() => rej(new Error(`Chunk reading timed out on batch:${id}`)), LEAF_WAIT_TIMEOUT);
+      if (typeof this.chunkCollectedCallbacks[id] == "undefined") {
+        this.chunkCollectedCallbacks[id] = [];
+      }
+      this.chunkCollectedCallbacks[id].push((chunk) => {
+        clearTimeout(timer);
+        res2(chunk);
+      });
+    }));
+    const res = await Promise.all(promises);
+    return res;
+  }
+  async execCollect() {
+    const requesting = [...this.collectThrottleQueuedIds];
+    this.collectThrottleQueuedIds = [];
+    const chunks = await this.CollectChunksInternal(requesting, false);
+    if (!chunks) {
+      Logger(`Could not retrieve chunks`, LOG_LEVEL.NOTICE);
+      return;
+    }
+    for (const chunk of chunks) {
+      this.chunkCollected(chunk);
+    }
+  }
+  async CollectChunksInternal(ids, showResult = false) {
     const localChunks = await this.localDatabase.allDocs({ keys: ids, include_docs: true });
     const missingChunks = localChunks.rows.filter((e3) => "error" in e3).map((e3) => e3.key);
     if (missingChunks.length == 0) {
@@ -10335,9 +10392,7 @@ var ObsidianLiveSyncSettingTab = class extends import_obsidian5.PluginSettingTab
         element2.removeClass("selected");
         element2.querySelector("input[type=radio]").checked = false;
       });
-      console.log(`.sls-setting-label.c-${screen}`);
       w.querySelectorAll(`.sls-setting-label.c-${screen}`).forEach((element2) => {
-        console.log(element2);
         element2.addClass("selected");
         element2.querySelector("input[type=radio]").checked = true;
       });
@@ -10355,8 +10410,8 @@ var ObsidianLiveSyncSettingTab = class extends import_obsidian5.PluginSettingTab
     const containerInformationEl = containerEl.createDiv();
     const h3El = containerInformationEl.createEl("h3", { text: "Updates" });
     const informationDivEl = containerInformationEl.createEl("div", { text: "" });
-    const manifestVersion = "0.15.7";
-    const updateInformation = "### 0.15.0\n- Outdated configuration items have been removed. \n- Setup wizard has been implemented!\n\nI appreciate for reviewing and giving me advice @Pouhon158!\n\n#### Minors\n- 0.15.1 Missed the stylesheet.\n- 0.15.2 The wizard has been improved and documented!\n- 0.15.3 Fixed the issue about locking/unlocking remote database while rebuilding in the wizard.\n- 0.15.4 Fixed issues about asynchronous processing (e.g., Conflict check or hidden file detection)\n- 0.15.5 Add new features for setting Self-hosted LiveSync up more easier.\n- 0.15.6 File tracking logic has been refined.\n- 0.15.7 Fixed bug about renaming file.\n\n### 0.14.1\n- The target selecting filter was implemented.\n  Now we can set what files are synchronised by regular expression.\n- We can configure the size of chunks.\n  We can use larger chunks to improve performance.\n  (This feature can not be used with IBM Cloudant)\n-  Read chunks online.\n  Now we can synchronise only metadata and retrieve chunks on demand. It reduces local database size and time for replication.\n- Added this note.\n- Use local chunks in preference to remote them if present,\n\n#### Recommended configuration for Self-hosted CouchDB\n- Set chunk size to around 100 to 250 (10MB - 25MB per chunk)\n- *Set batch size to 100 and batch limit to 20 (0.14.2)*\n- Be sure to `Read chunks online` checked.\n\n#### Minors\n- 0.14.2 Fixed issue about retrieving files if synchronisation has been interrupted or failed\n- 0.14.3 New test items have been added to `Check database configuration`.\n- 0.14.4 Fixed issue of importing configurations.\n- 0.14.5 Auto chunk size adjusting implemented.\n- 0.14.6 Change Target to ES2018\n- 0.14.7 Refactor and fix typos.\n- 0.14.8 Refactored again. There should be no change in behaviour, but please let me know if there is any.\n\n... To continue on to `updates_old.md`.";
+    const manifestVersion = "0.16.0";
+    const updateInformation = "### 0.16.0\n- Now hidden files need not be scanned. Changes will be detected automatically.\n  - If you want it to back to its previous behaviour, please disable `Monitor changes to internal files`.\n  - Due to using an internal API, this feature may become unusable with a major update. If this happens, please disable this once.\n\n### 0.15.0\n- Outdated configuration items have been removed. \n- Setup wizard has been implemented!\n\nI appreciate for reviewing and giving me advice @Pouhon158!\n\n#### Minors\n- 0.15.1 Missed the stylesheet.\n- 0.15.2 The wizard has been improved and documented!\n- 0.15.3 Fixed the issue about locking/unlocking remote database while rebuilding in the wizard.\n- 0.15.4 Fixed issues about asynchronous processing (e.g., Conflict check or hidden file detection)\n- 0.15.5 Add new features for setting Self-hosted LiveSync up more easier.\n- 0.15.6 File tracking logic has been refined.\n- 0.15.7 Fixed bug about renaming file.\n- 0.15.8 Fixed bug about deleting empty directory, weird behaviour on boot-sequence on mobile devices.\n- 0.15.9 Improved chunk retrieving, now chunks are retrieved in batch on continuous requests.\n- 0.15.10 Fixed:\n  - The boot sequence has been corrected and now boots smoothly.\n  - Auto applying of batch save will be processed earlier than before.\n\n... To continue on to `updates_old.md`.";
     const lastVersion = ~~(versionNumberString2Number(manifestVersion) / 1e3);
     const tmpDiv = createSpan();
     tmpDiv.addClass("sls-header-button");
@@ -10919,11 +10974,15 @@ var ObsidianLiveSyncSettingTab = class extends import_obsidian5.PluginSettingTab
       this.plugin.settings.syncInternalFiles = value;
       await this.plugin.saveSettings();
     }));
-    new import_obsidian5.Setting(containerSyncSettingEl).setName("Scan for hidden files before replication").addToggle((toggle) => toggle.setValue(this.plugin.settings.syncInternalFilesBeforeReplication).onChange(async (value) => {
+    new import_obsidian5.Setting(containerSyncSettingEl).setName("Monitor changes to internal files").addToggle((toggle) => toggle.setValue(this.plugin.settings.watchInternalFileChanges).onChange(async (value) => {
+      this.plugin.settings.watchInternalFileChanges = value;
+      await this.plugin.saveSettings();
+    }));
+    new import_obsidian5.Setting(containerSyncSettingEl).setName("Scan for hidden files before replication").setDesc("This configuration will be ignored if monitoring changes is enabled.").addToggle((toggle) => toggle.setValue(this.plugin.settings.syncInternalFilesBeforeReplication).onChange(async (value) => {
       this.plugin.settings.syncInternalFilesBeforeReplication = value;
       await this.plugin.saveSettings();
     }));
-    new import_obsidian5.Setting(containerSyncSettingEl).setName("Scan hidden files periodically").setDesc("Seconds, 0 to disable.").addText((text2) => {
+    new import_obsidian5.Setting(containerSyncSettingEl).setName("Scan hidden files periodically").setDesc("Seconds, 0 to disable. This configuration will be ignored if monitoring changes is enabled.").addText((text2) => {
       text2.setPlaceholder("").setValue(this.plugin.settings.syncInternalFilesInterval + "").onChange(async (value) => {
         let v = Number(value);
         if (isNaN(v) || v < 10) {
@@ -10936,7 +10995,7 @@ var ObsidianLiveSyncSettingTab = class extends import_obsidian5.PluginSettingTab
     });
     let skipPatternTextArea = null;
     const defaultSkipPattern = "\\/node_modules\\/, \\/\\.git\\/, \\/obsidian-livesync\\/";
-    const defaultSkipPatternXPlat = defaultSkipPattern + ",\\/workspace$";
+    const defaultSkipPatternXPlat = defaultSkipPattern + ",\\/workspace$ ,\\/workspace.json$";
     new import_obsidian5.Setting(containerSyncSettingEl).setName("Skip patterns").setDesc("Regular expression, If you use hidden file sync between desktop and mobile, adding `workspace$` is recommended.").addTextArea((text2) => {
       text2.setValue(this.plugin.settings.syncInternalFilesIgnorePatterns).setPlaceholder("\\/node_modules\\/, \\/\\.git\\/").onChange(async (value) => {
         this.plugin.settings.syncInternalFilesIgnorePatterns = value;
@@ -10945,7 +11004,7 @@ var ObsidianLiveSyncSettingTab = class extends import_obsidian5.PluginSettingTab
       skipPatternTextArea = text2;
       return text2;
     });
-    new import_obsidian5.Setting(containerSyncSettingEl).setName("Skip patterns defaults").addButton((button) => {
+    new import_obsidian5.Setting(containerSyncSettingEl).setName("Restore the skip pattern to default").addButton((button) => {
       button.setButtonText("Default").onClick(async () => {
         skipPatternTextArea.setValue(defaultSkipPattern);
         this.plugin.settings.syncInternalFilesIgnorePatterns = defaultSkipPattern;
@@ -12759,7 +12818,7 @@ var touchedFiles = [];
 function touch(file) {
   const f = file instanceof import_obsidian8.TFile ? file : app.vault.getAbstractFileByPath(file);
   const key = `${f.path}-${f.stat.mtime}-${f.stat.size}`;
-  touchedFiles.push(key);
+  touchedFiles.unshift(key);
   touchedFiles = touchedFiles.slice(0, 100);
 }
 function recentlyTouched(file) {
@@ -12780,6 +12839,7 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
     this.watchedFileEventQueue = [];
     this.pluginDialog = null;
     this.gcTimerHandler = null;
+    this.recentProcessedInternalFiles = [];
     this.addLogHook = null;
     this.notifies = {};
     this.lastLog = "";
@@ -12888,8 +12948,8 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
   async onload() {
     setLogger(this.addLog.bind(this));
     Logger("loading plugin");
-    const manifestVersion = "0.15.7";
-    const packageVersion = "0.15.7";
+    const manifestVersion = "0.16.0";
+    const packageVersion = "0.16.0";
     Logger(`Self-hosted LiveSync v${manifestVersion} ${packageVersion} `);
     const lsKey = "obsidian-live-sync-ver" + this.getVaultName();
     const last_version = localStorage.getItem(lsKey);
@@ -12937,16 +12997,18 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
     this.watchVaultCreate = this.watchVaultCreate.bind(this);
     this.watchVaultDelete = this.watchVaultDelete.bind(this);
     this.watchVaultRename = this.watchVaultRename.bind(this);
+    this.watchVaultRawEvents = this.watchVaultRawEvents.bind(this);
     this.watchWorkspaceOpen = (0, import_obsidian8.debounce)(this.watchWorkspaceOpen.bind(this), 1e3, false);
     this.watchWindowVisibility = (0, import_obsidian8.debounce)(this.watchWindowVisibility.bind(this), 1e3, false);
     this.watchOnline = (0, import_obsidian8.debounce)(this.watchOnline.bind(this), 500, false);
     this.parseReplicationResult = this.parseReplicationResult.bind(this);
-    this.periodicSync = this.periodicSync.bind(this);
     this.setPeriodicSync = this.setPeriodicSync.bind(this);
+    this.periodicSync = this.periodicSync.bind(this);
+    this.loadQueuedFiles = this.loadQueuedFiles.bind(this);
     this.getPluginList = this.getPluginList.bind(this);
     this.addSettingTab(new ObsidianLiveSyncSettingTab(this.app, this));
-    this.registerFileWatchEvents();
     this.app.workspace.onLayoutReady(async () => {
+      this.registerFileWatchEvents();
       if (this.localDatabase.isReady)
         try {
           if (this.isRedFlagRaised()) {
@@ -13328,6 +13390,7 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
     this.registerEvent(this.app.vault.on("delete", this.watchVaultDelete));
     this.registerEvent(this.app.vault.on("rename", this.watchVaultRename));
     this.registerEvent(this.app.vault.on("create", this.watchVaultCreate));
+    this.registerEvent(this.app.vault.on("raw", this.watchVaultRawEvents));
   }
   registerWatchEvents() {
     this.registerEvent(this.app.workspace.on("file-open", this.watchWorkspaceOpen));
@@ -13374,7 +13437,7 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
     }
   }
   async appendWatchEvent(type, file, oldPath, ctx) {
-    if (!this.isTargetFile(file))
+    if (file instanceof import_obsidian8.TFile && !this.isTargetFile(file))
       return;
     if (this.settings.suspendFileWatching)
       return;
@@ -13424,7 +13487,7 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
       return;
     if (this.settings.batchSave) {
       if (!applyBatch && this.watchedFileEventQueue.length < FileWatchEventQueueMax) {
-        setTrigger("applyBatchAuto", 12e4, () => {
+        setTrigger("applyBatchAuto", 3e4, () => {
           this.procFileEvent(true);
         });
         return;
@@ -13436,6 +13499,12 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
       this.watchedFileEventQueue = [];
       for (const queue of procs) {
         const file = queue.args.file;
+        const key = `file-last-proc-${queue.type}-${file.path}`;
+        const last = Number(await this.localDatabase.kvDB.get(key) || 0);
+        if (file instanceof import_obsidian8.TFile && file.stat.mtime == last) {
+          Logger(`File has been already scanned on ${queue.type}, skip: ${file.path}`, LOG_LEVEL.VERBOSE);
+          continue;
+        }
         const cache = queue.args.cache;
         if ((queue.type == "CREATE" || queue.type == "CHANGED") && file instanceof import_obsidian8.TFile) {
           await this.updateIntoDB(file, false, cache);
@@ -13448,7 +13517,15 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
           }
         }
         if (queue.type == "RENAME") {
-          await this.watchVaultRenameAsync(file, queue.args.oldPath);
+          if (file instanceof import_obsidian8.TFile) {
+            await this.watchVaultRenameAsync(file, queue.args.oldPath);
+          }
+        }
+        if (queue.type == "INTERNAL") {
+          await this.watchVaultRawEventsAsync(file.path);
+        }
+        if (file instanceof import_obsidian8.TFile) {
+          await this.localDatabase.kvDB.set(key, file.stat.mtime);
         }
       }
       this.refreshStatusText();
@@ -13491,6 +13568,40 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
   }
   async applyBatchChange() {
     return await this.procFileEvent(true);
+  }
+  watchVaultRawEvents(path) {
+    if (!this.settings.syncInternalFiles)
+      return;
+    if (!this.settings.watchInternalFileChanges)
+      return;
+    if (!path.startsWith(this.app.vault.configDir))
+      return;
+    const ignorePatterns = this.settings.syncInternalFilesIgnorePatterns.toLocaleLowerCase().replace(/\n| /g, "").split(",").filter((e3) => e3).map((e3) => new RegExp(e3));
+    if (ignorePatterns.some((e3) => path.match(e3)))
+      return;
+    this.appendWatchEvent("INTERNAL", { path, mtime: 0, ctime: 0, size: 0 }, "", null);
+  }
+  async watchVaultRawEventsAsync(path) {
+    const stat = await this.app.vault.adapter.stat(path);
+    if (stat && stat.type != "file")
+      return;
+    const storageMTime = ~~((stat && stat.mtime || 0) / 1e3);
+    const key = `${path}-${storageMTime}`;
+    if (this.recentProcessedInternalFiles.contains(key)) {
+      return;
+    }
+    this.recentProcessedInternalFiles = [key, ...this.recentProcessedInternalFiles].slice(0, 100);
+    const id = filename2idInternalChunk(path);
+    const filesOnDB = await this.localDatabase.getDBEntryMeta(id);
+    const dbMTime = ~~((filesOnDB && filesOnDB.mtime || 0) / 1e3);
+    if (dbMTime == storageMTime) {
+      return;
+    }
+    if (storageMTime == 0) {
+      await this.deleteInternalFileOnDatabase(path);
+    } else {
+      await this.storeInternalFileToDatabase({ path, ...stat });
+    }
   }
   GetAllFilesRecursively(file) {
     if (file instanceof import_obsidian8.TFile) {
@@ -13676,8 +13787,10 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
     }
   }
   async deleteVaultItem(file) {
-    if (!this.isTargetFile(file))
-      return;
+    if (file instanceof import_obsidian8.TFile) {
+      if (!this.isTargetFile(file))
+        return;
+    }
     const dir = file.parent;
     if (this.settings.trashInsteadDelete) {
       await this.app.vault.trash(file, false);
@@ -13782,6 +13895,7 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
         Logger(`Applied ${entry._id} (${entry._rev}) change...`);
       }
     });
+    this.refreshStatusText();
   }
   async handleDBChangedAsync(change) {
     const targetFile = this.app.vault.getAbstractFileByPath(id2path(change._id));
@@ -13830,6 +13944,7 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
       await this.syncInternalFilesAndDatabase("pull", false, false, w);
       Logger(`Applying hidden ${w.length} files changed`);
     });
+    this.refreshStatusText();
   }
   procInternalFile(filename) {
     this.procInternalFiles.push(filename);
@@ -14111,6 +14226,8 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
   updateStatusBarText() {
   }
   async replicate(showMessage) {
+    if (!this.isReady)
+      return;
     if (this.settings.versionUpFlash != "") {
       Logger("Open settings and check message, please.", LOG_LEVEL.NOTICE);
       return;
@@ -14120,7 +14237,7 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
       await this.sweepPlugin(false);
     }
     await this.loadQueuedFiles();
-    if (this.settings.syncInternalFiles && this.settings.syncInternalFilesBeforeReplication) {
+    if (this.settings.syncInternalFiles && this.settings.syncInternalFilesBeforeReplication && !this.settings.watchInternalFileChanges) {
       await this.syncInternalFilesAndDatabase("push", showMessage);
     }
     this.localDatabase.openReplication(this.settings, false, showMessage, this.parseReplicationResult);
@@ -14221,7 +14338,7 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
           await this.pullFile(e3, filesStorage, false, null, false);
           Logger(`Check or pull from db:${e3} OK`);
         } else {
-          Logger(`entry not found, maybe deleted:${e3}`);
+          Logger(`entry not found, maybe deleted (it is normal behavior):${e3}`);
         }
       });
     }
@@ -14761,7 +14878,7 @@ var ObsidianLiveSyncPlugin = class extends import_obsidian8.Plugin {
     if (this.periodicInternalFileScanHandler != null) {
       this.clearInternalFileScan();
     }
-    if (this.settings.syncInternalFiles && this.settings.syncInternalFilesInterval > 0) {
+    if (this.settings.syncInternalFiles && this.settings.syncInternalFilesInterval > 0 && !this.settings.watchInternalFileChanges) {
       this.periodicPluginSweepHandler = this.setInterval(async () => await this.periodicInternalFileScan(), this.settings.syncInternalFilesInterval * 1e3);
     }
   }

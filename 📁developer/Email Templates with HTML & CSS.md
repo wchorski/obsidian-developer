@@ -178,6 +178,7 @@ I checked what the _received mail_ looked like in different clients
 - - [Thunderbird Mail Client](https://www.thunderbird.net/)
 	- "Simple Brow" theme
 	- template Plugin - [QuickText](https://addons.thunderbird.net/en-US/thunderbird/addon/quicktext/?src=search)
+	- conversation view plugin - [Thunderbird Conversations](https://addons.thunderbird.net/en-US/thunderbird/addon/gmail-conversation-view/?src=search) 
 
 ---
 ## backlinks

@@ -1,4 +1,4 @@
-# Pi4 (Debian 11 Bullseye 64bit)
+## Pi4 (Debian 11 Bullseye 64bit)
 - [Glances](Glances.md)
 - [Pi-hole](Pi-hole.md)
 	- Unbound DNS
@@ -10,7 +10,7 @@
 - [Hyperion](Hyperion.md)
 
 ---
-# Icicle - Intel NUC (Debian 11 Bullseye 64bit)
+## Icicle - Intel NUC (Debian 11 Bullseye 64bit)
 - [Glances](Glances.md)
 - [Duplicati](Duplicati.md)
 - [SFTP](SFTP.md)
@@ -24,7 +24,7 @@
 	- [portainer](portainer.md)
 
 ---
-# Spearmint - (custom PC) (Linux Mint)
+## Spearmint - (custom PC) (Linux Mint)
 - [Glances](Glances.md)
 - [Duplicati](Duplicati.md)
 - [Docker](Docker.md)
@@ -35,7 +35,7 @@
 - [SAMBA](SAMBA.md)
 
 ---
-# Frostbyte
+## Frostbyte
 - [Duplicati](Duplicati.md) 
 - FL Studio
 - Davinci Resolve
@@ -44,27 +44,23 @@
 - [Thunderbird — Make Email Easier. — Thunderbird](https://www.thunderbird.net/en-US/)
 
 ---
-# Sn0flake
+## Sn0flake
 - [Duplicati](Duplicati.md)
 - Serato
 - [Hyperion](Hyperion.md)
 - Unity3D
 
 ---
-# Milkywave
+## Milkywave
 - [Nextcloud](Nextcloud.md)
 - [SAMBA](SAMBA.md)
 - [K-9 Mail (k9mail.app)](https://k9mail.app/)
 
 ---
-TODO LIST
-- [x]  Pi4 - backup-dd-n-shrink.sh
-- [x] Zip instead of pi-shrink
-- [ ] Pi4 - backup.sh
-- [ ] Add hyperion into the mix
-- [ ] Copy over all repo to octo8
-- [ ] Pi4 - update.sh
-- [x] Pihole
-- [x] Pivpn
-- [x] hyperion
-- [ ] Apt update && upgrade
+#todo
+- [ ] Pi4 - backup-dd-n-shrink.sh
+- [ ] Zip instead of pi-shrink
+- [ ] Pi4 - backup.sh
+- [ ] Add hyperion into the mix
+- [ ] tryout jellyfin in home assistant integration 
+

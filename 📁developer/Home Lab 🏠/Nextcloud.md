@@ -1,3 +1,5 @@
+#cloud #gmail #opensource 
+
 ## [Homepage - Nextcloud](https://nextcloud.com/)
 
 > Regain control over your data. Remote collaboration made easy
@@ -13,6 +15,8 @@
 ### connections
 - publicly face app with [Nginx](Nginx%20Proxy%20Manager.md#Publicly%20Facing%20App)
 - syncs pictures for [PhotoPrism](PhotoPrism.md) to read my every growing photo gallery
+- used as my calendar server
+- backup phone contacts
 
 ### installation
 1. note that I use an external drive. You must set up your other drive first.
@@ -57,11 +61,12 @@ services:
 ```
 
 ---
-
+## Gmail SMTP server
+Nextcloud needs a way to send password resets / notifications / alerts. So I've hooked it up with gmail's SMTP server using an google app password.  
 
 ---
 
 #todo 
 - [x] man description
 - [x] my desc
-- [ ] 
+- [ ] working on contact syncing

@@ -1,8 +1,14 @@
-📁music
-📁shower_thoughts
+*
+!netlify.toml
+!.gitignore
+!.obsidian
+
 templates
-.trash
 hotkeys.md
 Milkywave.md
+.trash
+📁music
+📁shower_thoughts
+
 */GameDev 🕹
 */N10-008 CompTIA Network+
